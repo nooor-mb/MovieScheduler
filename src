@@ -1,1 +1,215 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+    static Scanner scanner = new Scanner(System.in);
+    static List<Screening> screenings = new ArrayList<>();
+    static final String FILE_PATH = "screenings.txt";
+
+    public static void main(String[] args) {
+        loadData();
+        while (true) {
+            System.out.println("\nMovie Screening Scheduler");
+            System.out.println("1. Add Screening");
+            System.out.println("2. View Screenings");
+            System.out.println("3. Update Screening");
+            System.out.println("4. Delete Screening");
+            System.out.println("5. Generate Report");
+            System.out.println("6. Export/Import");
+            System.out.println("7. Exit");
+            System.out.print("Choose option: ");
+            String choice = scanner.nextLine();
+
+            switch (choice) {
+                case "1" -> addScreening();
+                case "2" -> viewScreenings();
+                case "3" -> updateScreening();
+                case "4" -> deleteScreening();
+                case "5" -> generateReport();
+                case "6" -> handleImportExport();
+                case "7" -> {
+                    saveData();
+                    System.out.println("Exiting...");
+                    return;
+                }
+                default -> System.out.println("Invalid choice.");
+            }
+        }
+    }
+
+    static class Screening {
+        String title, date, time, theater;
+
+        Screening(String title, String date, String time, String theater) {
+            this.title = title;
+            this.date = date;
+            this.time = time;
+            this.theater = theater;
+        }
+
+        String toFileString() {
+            return title + ";" + date + ";" + time + ";" + theater;
+        }
+
+        static Screening fromFileString(String line) {
+            String[] parts = line.split(";");
+            return new Screening(parts[0], parts[1], parts[2], parts[3]);
+        }
+
+        @Override
+        public String toString() {
+            return "Movie: " + title + ", Date: " + date + ", Time: " + time + ", Theater: " + theater;
+        }
+    }
+
+    static void loadData() {
+        try (BufferedReader br = new BufferedReader(new FileReader(FILE_PATH))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                screenings.add(Screening.fromFileString(line));
+            }
+        } catch (IOException ignored) {}
+    }
+
+    static void saveData() {
+        try (PrintWriter pw = new PrintWriter(new FileWriter(FILE_PATH))) {
+            for (Screening s : screenings) {
+                pw.println(s.toFileString());
+            }
+        } catch (IOException e) {
+            System.out.println("Error saving data.");
+        }
+    }
+
+    static boolean isEmpty(String input) {
+        return input == null || input.trim().isEmpty();
+    }
+
+    static boolean isValidDate(String date) {
+        return date.matches("\\d{4}-\\d{2}-\\d{2}");
+    }
+
+    static boolean isValidTime(String time) {
+        return time.matches("\\d{2}:\\d{2}");
+    }
+
+    static void addScreening() {
+        System.out.print("Movie title: ");
+        String title = scanner.nextLine();
+        System.out.print("Date (YYYY-MM-DD): ");
+        String date = scanner.nextLine();
+        System.out.print("Time (HH:MM): ");
+        String time = scanner.nextLine();
+        System.out.print("Theater: ");
+        String theater = scanner.nextLine();
+
+        if (isEmpty(title) || !isValidDate(date) || !isValidTime(time)) {
+            System.out.println("Invalid input.");
+            return;
+        }
+
+        screenings.add(new Screening(title, date, time, theater));
+        System.out.println("Screening added.");
+    }
+
+    static void viewScreenings() {
+        if (screenings.isEmpty()) {
+            System.out.println("No screenings available.");
+            return;
+        }
+        int i = 1;
+        for (Screening s : screenings) {
+            System.out.println(i++ + ". " + s);
+        }
+    }
+
+    static void updateScreening() {
+        viewScreenings();
+        System.out.print("Select number to update: ");
+        int index;
+        try {
+            index = Integer.parseInt(scanner.nextLine()) - 1;
+        } catch (Exception e) {
+            System.out.println("Invalid input.");
+            return;
+        }
+
+        if (index < 0 || index >= screenings.size()) {
+            System.out.println("Invalid index.");
+            return;
+        }
+
+        System.out.print("New Movie title: ");
+        String title = scanner.nextLine();
+        System.out.print("New Date (YYYY-MM-DD): ");
+        String date = scanner.nextLine();
+        System.out.print("New Time (HH:MM): ");
+        String time = scanner.nextLine();
+        System.out.print("New Theater: ");
+        String theater = scanner.nextLine();
+
+        screenings.set(index, new Screening(title, date, time, theater));
+        System.out.println("Screening updated.");
+    }
+
+    static void deleteScreening() {
+        viewScreenings();
+        System.out.print("Select number to delete: ");
+        int index;
+        try {
+            index = Integer.parseInt(scanner.nextLine()) - 1;
+        } catch (Exception e) {
+            System.out.println("Invalid input.");
+            return;
+        }
+
+        if (index < 0 || index >= screenings.size()) {
+            System.out.println("Invalid index.");
+            return;
+        }
+
+        screenings.remove(index);
+        System.out.println("Screening deleted.");
+    }
+
+    static void generateReport() {
+        System.out.println("Total Screenings: " + screenings.size());
+        try (PrintWriter writer = new PrintWriter("report.txt")) {
+            for (Screening s : screenings) writer.println(s);
+            System.out.println("Report saved to report.txt");
+        } catch (IOException e) {
+            System.out.println("Failed to write report.");
+        }
+    }
+
+    static void handleImportExport() {
+        System.out.println("1. Export (CSV)");
+        System.out.println("2. Import (CSV)");
+        System.out.print("Choice: ");
+        String choice = scanner.nextLine();
+
+        if (choice.equals("1")) {
+            try (PrintWriter pw = new PrintWriter("export.csv")) {
+                for (Screening s : screenings) {
+                    pw.println(s.toFileString());
+                }
+                System.out.println("Data exported to export.csv");
+            } catch (IOException e) {
+                System.out.println("Export failed.");
+            }
+        } else if (choice.equals("2")) {
+            try (BufferedReader br = new BufferedReader(new FileReader("import.csv"))) {
+                String line;
+                while ((line = br.readLine()) != null) {
+                    screenings.add(Screening.fromFileString(line));
+                }
+                System.out.println("Data imported from import.csv");
+            } catch (IOException e) {
+                System.out.println("Import failed.");
+            }
+        } else {
+            System.out.println("Invalid choice.");
+        }
+    }
+}
 
