@@ -38,17 +38,17 @@ public class Main {
     }
 
     static class Screening {
-        String title, date, time, theater;
+        String title, date, time, cinema;
 
-        Screening(String title, String date, String time, String theater) {
+        Screening(String title, String date, String time, String cinema) {
             this.title = title;
             this.date = date;
             this.time = time;
-            this.theater = theater;
+            this.cinema = cinema;
         }
 
         String toFileString() {
-            return title + ";" + date + ";" + time + ";" + theater;
+            return title + ";" + date + ";" + time + ";" + cinema;
         }
 
         static Screening fromFileString(String line) {
@@ -58,7 +58,7 @@ public class Main {
 
         @Override
         public String toString() {
-            return "Movie: " + title + ", Date: " + date + ", Time: " + time + ", Theater: " + theater;
+            return "Movie: " + title + ", Date: " + date + ", Time: " + time + ", Cinema: " + cinema;
         }
     }
 
@@ -94,23 +94,89 @@ public class Main {
     }
 
     static void addScreening() {
-        System.out.print("Movie title: ");
-        String title = scanner.nextLine();
-        System.out.print("Date (YYYY-MM-DD): ");
-        String date = scanner.nextLine();
-        System.out.print("Time (HH:MM): ");
-        String time = scanner.nextLine();
-        System.out.print("Theater: ");
-        String theater = scanner.nextLine();
+        String title, date, time, cinema;
 
-        if (isEmpty(title) || !isValidDate(date) || !isValidTime(time)) {
-            System.out.println("Invalid input.");
-            return;
+        // Get valid movie title
+        while (true) {
+            System.out.print("Movie title: ");
+            title = scanner.nextLine();
+            if (isEmpty(title)) {
+                System.out.println("Title cannot be empty.");
+            } else {
+                break;
+            }
         }
 
-        screenings.add(new Screening(title, date, time, theater));
+        // Get valid date
+        while (true) {
+            System.out.print("Date (YYYY-MM-DD): ");
+            date = scanner.nextLine();
+            if (!isValidDate(date)) {
+                System.out.println("Invalid date format.");
+            } else {
+                try {
+                    String[] parts = date.split("-");
+                    int year = Integer.parseInt(parts[0]);
+                    int month = Integer.parseInt(parts[1]);
+                    int day = Integer.parseInt(parts[2]);
+                    if (month < 1 || month > 12 || day < 1 || day > 31) {
+                        System.out.println("Invalid month or day.");
+                    } else if ((month == 4 || month == 6 || month == 9 || month == 11) && day > 30) {
+                        System.out.println("Invalid day for the given month.");
+                    } else if (month == 2) {
+                        boolean leap = (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0));
+                        if (day > (leap ? 29 : 28)) {
+                            System.out.println("Invalid day for February.");
+                        } else {
+                            break; // Valid date
+                        }
+                    } else {
+                        break; // Valid date
+                    }
+                } catch (Exception e) {
+                    System.out.println("Invalid date values.");
+                }
+            }
+        }
+
+        // Get valid time
+        while (true) {
+            System.out.print("Time (HH:MM): ");
+            time = scanner.nextLine();
+            if (!isValidTime(time)) {
+                System.out.println("Invalid time format.");
+            } else {
+                try {
+                    String[] t = time.split(":");
+                    int hour = Integer.parseInt(t[0]);
+                    int minute = Integer.parseInt(t[1]);
+                    if (hour < 0 || hour > 23 || minute < 0 || minute > 59) {
+                        System.out.println("Invalid hour or minute.");
+                    } else {
+                        break; // Valid time
+                    }
+                } catch (Exception e) {
+                    System.out.println("Invalid time values.");
+                }
+            }
+        }
+
+        // Get valid cinema
+        while (true) {
+            System.out.print("Cinema: ");
+            cinema = scanner.nextLine();
+            if (isEmpty(cinema)) {
+                System.out.println("Cinema cannot be empty.");
+            } else {
+                break; // Valid cinema
+            }
+        }
+
+        // Add the screening after validation
+        screenings.add(new Screening(title, date, time, cinema));
         System.out.println("Screening added.");
     }
+
 
     static void viewScreenings() {
         if (screenings.isEmpty()) {
@@ -145,10 +211,10 @@ public class Main {
         String date = scanner.nextLine();
         System.out.print("New Time (HH:MM): ");
         String time = scanner.nextLine();
-        System.out.print("New Theater: ");
-        String theater = scanner.nextLine();
+        System.out.print("New Cinema: ");
+        String cinema = scanner.nextLine();
 
-        screenings.set(index, new Screening(title, date, time, theater));
+        screenings.set(index, new Screening(title, date, time, cinema));
         System.out.println("Screening updated.");
     }
 
@@ -212,4 +278,3 @@ public class Main {
         }
     }
 }
-
