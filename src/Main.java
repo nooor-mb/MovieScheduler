@@ -5,8 +5,11 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+
 class Screening {
     String title, date, time, cinema;
+
+
 
     Screening(String title, String date, String time, String cinema) {
         this.title = title;
