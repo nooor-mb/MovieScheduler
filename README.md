@@ -95,6 +95,9 @@ Royal Cinema
 
 Expected: Screening is added to the list.
 
+![image](https://github.com/user-attachments/assets/54f6e85e-61e0-4812-a368-8706542290d4)
+
+
  Test 2: Invalid Date
 
 Input:
@@ -127,6 +130,8 @@ Input: 4 → Selects one to delete
 Expected: Screening removed.
 
  Test 6: Save to File
+![image](https://github.com/user-attachments/assets/de410caa-91d0-4570-87bd-ba47118ab45b)
+
 
 Input: 5
 Expected: screenings.txt created or updated.
@@ -137,6 +142,8 @@ Input: 6
 Expected: Reads and shows data from file.
 
  Test 8: Import From CSV
+ ![image](https://github.com/user-attachments/assets/ed8b1a47-5ba3-460d-82b1-692e5e0474ff)
+
 
 Input: 7
 Expected: Screenings from screenings.csv added.
