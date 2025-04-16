@@ -1,5 +1,4 @@
-Title,Date,Time,Cinema
-Dune: Part Two,2025-04-15,18:30, Cinema 1
+Dune: Part Two,2025-04-15,18:30,Cinema 1
 Avengers: Secret Wars,2025-05-01,20:00,Cinema 2
 The Batman: Arkham,2025-04-18,19:15,Cinema 3
 Inside Out 2,2025-04-20,16:45,Cinema 1
@@ -7,15 +6,3 @@ Oppenheimer,2025-04-12,21:00,Cinema 4
 Wonka,2025-04-10,17:30,Cinema 5
 Barbie,2025-04-22,15:00,Cinema 2
 Mission: Impossible 8,2025-04-25,19:45,Cinema 3
-Al-Fara bi,2026-12-31,20:34,Cinema 5
-
-
-
-
-
-
-
-
-
-
-y
